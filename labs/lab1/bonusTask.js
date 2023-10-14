@@ -1,90 +1,45 @@
-// Expression Evaluator
+const whitespaceRegex = /\s+/g;
+const multiplicationDivideRegex = /[0-9]+[*/][0-9]+/;
+const sumRegex = /[0-9]+[+-][0-9]+/;
+const operandRegex = /[*/+-]/;
 
-let lambdas = {
-    '+': (a, b) => {
-        return a + b;
-    },
-    '-': (a, b) => {
-        return a - b;
-    },
+const lambdas = {
     '*': (a, b) => {
         return a * b;
     },
     '/': (a, b) => {
         return a / b;
+    },
+    '+': (a, b) => {
+        return a + b;
+    },
+    '-': (a, b) => {
+        return a - b;
     }
 };
 
-function getOperands(expr) {
-    let regex = /[^+\-*\/]+/;
+function myEval(operation) {
+    const elements = operation.split(operandRegex);
+    const operand = operation.match(operandRegex)[0];
 
-    return expr.split(regex).filter(el => {
-        return !!el;
-    });
+    return lambdas[operand](+elements[0], +elements[1]);
 }
 
-function getDigits(expr) {
-    let regex = /[^0-9]+/;
+function evalExpr(expr) {
+    expr = expr.replaceAll(whitespaceRegex, '');
 
-    return expr.split(regex);
+    let matched;
+    while ((matched = expr.match(multiplicationDivideRegex)) !== null
+        || (matched = expr.match(sumRegex)) !== null) {
+
+        const matchedOperation = matched[0];
+
+        expr = expr.replace(matchedOperation, myEval(matchedOperation));
+    }
+
+    return expr;
 }
 
-function calculateExpr(expr) {
-    if (expr.length === 1) {
-        return +expr;
-    }
+let expression = '12 * 10 + 2 * 5 * 9 + 3 / 3 + 123';
 
-    let operands = getOperands(expr);
-    let digits = getDigits(expr);
-
-    while (calcIter(operands, digits, '*')) {
-    }
-    while (calcIter(operands, digits, '/')) {
-    }
-    while (calcIter(operands, digits, '+')) {
-    }
-    while (calcIter(operands, digits, '-')) {
-    }
-
-    return digits[0];
-}
-
-function calcIter(operands, digits, oper) {
-    for (let i = 0; i < operands.length; ++i) {
-        if (operands[i] === oper) {
-            digits[i] = lambdas[oper](+digits[i], +digits[i + 1]);
-            digits.splice(i + 1, 1);
-            operands.splice(i, 1);
-            return true;
-        }
-    }
-
-    return false;
-}
-
-
-function calculateAllExpressions(string) {
-    let regex = /\s+=\s+/;
-    let split = string.split(regex);
-
-    let calculatedExpressions = [];
-    split.forEach(expr => {
-        calculatedExpressions.push(calculateExpr(expr));
-    });
-
-    return calculatedExpressions;
-}
-
-let str = '1 + 3 * 2 - 14 = 2 * 8 / 16 - 8 / 8 = 0';
-
-let result = calculateAllExpressions(str);
-let all = result.length - 1;
-let copy = all;
-
-for (let i = 0; i < result.length - 1; ++i) {
-    if (result[i] !== result[i + 1]) {
-        --copy;
-    }
-}
-
-console.log(`${copy}/${all}`);
+console.log(evalExpr(expression));
