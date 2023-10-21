@@ -5,9 +5,11 @@ function curry(func) {
         totalArgs = totalArgs.concat([].slice.call(arguments));
 
         if (totalArgs.length >= func.length) {
-            var result =  func(...totalArgs);
-            totalArgs = [];
-            return result;
+            try {
+                func.apply(undefined, totalArgs)
+            } finally {
+                totalArgs = [];
+            }
         }
 
         return curriedFunc;
