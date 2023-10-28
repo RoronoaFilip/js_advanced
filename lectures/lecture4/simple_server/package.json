@@ -2,13 +2,13 @@
   "name": "lecture4",
   "version": "1.0.0",
   "description": "A Test npm init project",
-  "main": "node.js",
+  "main": "../node.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Filip :)",
   "license": "ISC",
   "dependencies": {
-    "npm": "^10.2.1"
+    "npm": "^8.19.2"
   }
 }
