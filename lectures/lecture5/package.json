@@ -1,0 +1,20 @@
+{
+  "name": "lecture5",
+  "version": "1.0.0",
+  "description": "Npm Project for Lecture5. Readable, Writable Streams",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "engines" : {
+    "npm" : ">=8.19.4",
+    "node" : ">=16.20.2"
+  },
+  "keywords": [
+    "Readable",
+    "Writable",
+    "Stream"
+  ],
+  "author": "Me",
+  "license": "ISC"
+}
