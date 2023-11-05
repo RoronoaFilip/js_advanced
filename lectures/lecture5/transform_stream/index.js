@@ -25,7 +25,7 @@ const transformStream = new Transform({
         const chunkString = chunk.toString();
         this.buffer = (this.buffer || '') + chunkString;
 
-        if (chunkString.includes('\n')) {
+        if (this.buffer.includes('\n')) {
             const lines = this.buffer.split('\n');
             this.buffer = lines.pop();
 

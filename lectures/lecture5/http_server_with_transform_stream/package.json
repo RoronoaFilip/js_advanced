@@ -1,0 +1,18 @@
+{
+  "name": "http_server_with_transform_stream",
+  "version": "1.0.0",
+  "description": "A Simple Http Server that Transform a HTML page with Transform Stream",
+  "main": "index.js",
+  "scripts": {
+    "server": "node ./index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "Http",
+    "Server",
+    "Transform",
+    "Stream"
+  ],
+  "author": "Me",
+  "license": "ISC"
+}
