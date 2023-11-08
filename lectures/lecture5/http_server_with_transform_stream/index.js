@@ -5,7 +5,7 @@ const fs = require('fs');
 const {Transform} = require('stream');
 
 const pagesHandlers = {
-    main: handlePage
+    main: handleMainPage
 };
 
 const methodHandlers = {
@@ -62,14 +62,14 @@ function handleGetRequest(req, res) {
     const parsedPath = path.parse(req.url);
 
     const handlerFunction = pagesHandlers[parsedPath.name] || responseHandlers.NOT_FOUND;
-    handlerFunction(req, res, parsedPath.name);
+    handlerFunction(req, res);
 }
 
 function handlePostRequest(req, res) {
     const parsedPath = path.parse(req.url);
 
     const handlerFunction = pagesHandlers[parsedPath.name] || responseHandlers.NOT_FOUND;
-    handlerFunction(req, res, parsedPath.name);
+    handlerFunction(req, res);
 }
 
 function notFoundHandler(req, res, end = true, contentToWrite = null) {
@@ -81,7 +81,8 @@ function notFoundHandler(req, res, end = true, contentToWrite = null) {
     }
 }
 
-function handlePage(req, res, pageName) {
+function handleMainPage(req, res) {
+    const pageName = 'main';
     function handleError(err) {
         if (err) {
             const errorCode = err.code.toUpperCase();
@@ -116,18 +117,20 @@ function createTransformStream(pageName) {
             const chunkString = chunk.toString();
             this.buffer = (this.buffer || '') + chunkString;
 
-            if (this.buffer.includes('\n')) {
-                this.handleCssFile();
-
+            if (this.buffer.includes('<style>')) {
+                this.handleCssFile(cb);
+            } else if (this.buffer.includes('\n')) {
                 const lines = this.buffer.split('\n');
                 this.buffer = lines.pop();
 
                 for (const i in lines) {
                     this.push(transformText(replacementMap, lines[i]) + '\n');
                 }
-            }
 
-            return cb();
+                return cb();
+            } else {
+                return cb();
+            }
         },
         flush(cb) {
             if (this.buffer) {
@@ -139,12 +142,21 @@ function createTransformStream(pageName) {
         }
     });
 
-    transformStream.handleCssFile = function handleCssFile() {
-        if (!this.buffer.includes('<style>')) {
-            return;
-        }
+    transformStream.handleCssFile = function handleCssFile(cb) {
+        let splitBuffer = this.buffer.split('<style>');
+        this.push(splitBuffer[0] + '<style>');
 
-        this.buffer = this.buffer.replace('<style>', `<style>${fs.readFileSync(this.cssFilePath)}`);
+        let transformStream = this;
+        const cssStream = fs.createReadStream('pages/main.css',
+            { highWaterMark: 1024, encoding: 'utf8' })
+            .on('data', function readChunk(chunk) {
+                transformStream.push(chunk);
+            })
+            .on('end', function callCb() {
+                cb();
+            });
+
+        this.buffer = splitBuffer[1] || '';
     };
 
     transformStream.cssFilePath = `./pages/${pageName}.css`;
