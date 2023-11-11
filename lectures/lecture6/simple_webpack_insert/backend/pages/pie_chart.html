@@ -1,0 +1,48 @@
+<style>
+    :root {
+        --animation-duration: 2s;
+    }
+
+    .pie-chart {
+        position: relative;
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        animation: spin 1s forwards ease-in-out;
+    }
+
+    .pie-chart:hover {
+        animation: running 0s !important;
+    }
+
+    @keyframes spin {
+        from {
+            transform: rotate(0deg);
+        }
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    .legend {
+        display: flex;
+        justify-content: space-between;
+        width: 200px;
+        margin-top: 10px;
+        font-size: 14px;
+    }
+
+    .legend div {
+        display: flex;
+        align-items: center;
+    }
+
+    .legend div span {
+        display: inline-block;
+        width: 20px;
+        height: 10px;
+        margin-right: 5px;
+    }
+</style>
+<div class="pie-chart" id="sdkPieChart"></div>
+<div class="legend" id="sdkLegend"></div>

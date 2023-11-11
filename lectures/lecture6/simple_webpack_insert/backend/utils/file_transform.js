@@ -1,8 +1,9 @@
-import { Transform } from "stream";
-import { transformText } from "./transform_text";
+const {Transform} = require('stream');
+const {transformText} = require('./transform_text');
 
-function createTransformStream(pageName, replacementMap) {
-    const transformStream = new Transform({
+function createTransformStream(replacementMap) {
+    replacementMap = replacementMap || {};
+    return new Transform({
         encoding: 'utf8',
         buffer: '',
         transform(chunk, encoding, cb) {
@@ -31,8 +32,6 @@ function createTransformStream(pageName, replacementMap) {
             return cb();
         }
     });
-
-    return transformStream;
 }
 
 module.exports = {createTransformStream};
