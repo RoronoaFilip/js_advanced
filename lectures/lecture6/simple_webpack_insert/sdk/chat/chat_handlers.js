@@ -57,7 +57,6 @@ function addUserOnline(username, password) {
 }
 
 function createChatBox(divId, recipient) {
-    divId
     fetch('http://localhost:8080/chat', {
         method: "POST",
         headers: {
